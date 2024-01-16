@@ -4,6 +4,8 @@ from tkinter import ttk
 from tkinter import messagebox
 import json
 import os
+from tkinter.font import nametofont
+
 
 
 
@@ -14,14 +16,20 @@ def add_json():
     product_prix = prix_entre.get()
     product_Qnt = Quantity_entre.get()
     product_Date_exep = Date_entre.get()
+    #Check If Data not Empty
     if not (product_id and product_name and product_prix and product_Qnt and product_Date_exep):
         messagebox.showerror("Error","Please fill in all fields.")
         return
-
-    for i in range(len(product_id)):
-        if product_id[0] == "0" or product_id[i] not in ["0","1","2","3","4","5","6","7","8","9"] :
-          messagebox.showerror("Ereur","please entre corect")
+    #Prix Should be numbers
+    for i in range(len(product_prix)):
+        if product_prix[0] == "0" or product_prix[i] not in ["0","1","2","3","4","5","6","7","8","9"] :
+          messagebox.showerror("Error","Enter Correct Prix")
           return
+    #Quantity Should be numbers
+    for i in range(len(product_Qnt)):
+        if product_Qnt[0]=="0" or product_Qnt[i] not in ["0","1","2","3","4","5","6","7","8","9"]:
+            messagebox.showerror("Error","Enter Correct Prix")
+            return
 
     #Put Data in entry
     Data_Entry = {
@@ -120,20 +128,24 @@ Sell.place(x=20,y=400)
 Delete = cs.CTkButton(root,corner_radius=15,border_width=2,bg_color="#393939",text_color="white",cursor='hand2'
                     ,font=My_Fonts["Second_Font"],hover_color="#FF2400",text="Delete Products",fg_color="#ED2939",width=245,height=40)
 Delete.place(x=20,y=460)
-# i will create treeview
+#  i will create treeview
 style = ttk.Style(root)
-style.configure('Treeview', font=("Open Sans",18, 'bold'), foreground='green', fieldbackground='#313837',rowheight=30)
-style.map('Treeview', background=[('selected', 'red')],)
+style.configure('Treeview', background='#2C3E50', foreground='white', font=('Open Sans', 18, 'bold'), fieldbackground='red',rowheight=30)
+style.map('Treeview', background=[('selected', 'red'),],)
 tree = ttk.Treeview(root,height=22)
 
 tree['show'] = 'headings'  # This removes the empty first column
-tree['padding'] = [10, 10]
+tree['padding'] = [0, 30]
 #Create Columns
 tree['columns'] = ('ID','Name','Prix','Quantity','Date Exep','Total')
 #Create Header of treeview
+TkHeadingFont = nametofont("TkHeadingFont")
+TkHeadingFont.configure(size=19)
+style.configure("Treeview.Heading", foreground="red",font=('Open Sans', 20, 'bold'))
+
 tree.column('#0',width=0,stretch=tk.NO)
 for column in tree['columns']:
-    tree.column(column, anchor=tk.CENTER, width=150,)
+    tree.column(column, anchor=tk.CENTER, width=160,)
 
 for column in tree['columns']:
     tree.heading(column,text=column)
