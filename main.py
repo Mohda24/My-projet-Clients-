@@ -16,6 +16,7 @@ def Check_data(y,z):
 
 # function to add data to json file
 def add_json():
+    # get data from entry
     product_id = Myid_entre.get()
     product_name = Name_entre.get()
     product_prix = prix_entre.get()
@@ -27,8 +28,9 @@ def add_json():
         return
     #Prix Should be numbers
     Check_data(product_prix,"Prix")
-    Check_data(product_Qnt,"Quantity")
     #Quantity Should be numbers
+    Check_data(product_Qnt,"Quantity")
+
 
 
     #Put Data in entry
@@ -41,6 +43,7 @@ def add_json():
         'Total':f"{float(product_prix)*int(product_Qnt)} DH"
     }
     Myjson_file = 'products.json'
+    #Checks if file json exists
     if os.path.exists(Myjson_file):
         with open(Myjson_file,'r') as file:
             data = json.load(file)
@@ -56,45 +59,48 @@ def add_json():
     prix_entre.delete(0,tk.END)
     Quantity_entre.delete(0,tk.END)
     Date_entre.delete(0,tk.END)
+    #add data to treeview
     add_to_treeview()
+    #message box
     messagebox.showinfo("Info",'Data has Inserted')
-
+# Function to insert data in treeView
 def add_to_treeview():
+    #Checks if file json exists
     Myjson_file='products.json'
     if os.path.exists(Myjson_file):
         with open(Myjson_file,'r') as file:
             data =json.load(file)
-
+        #delete all data from treeview
         for item in tree.get_children():
             tree.delete(item)
+        # insert new datas
         for item in data:
             tree.insert("","end",values=(
               item['ID'],item['Name'],item['Prix'],item['Quantity'],item['Date Exep'],item['Total']))
+#Function For Update data
 def Update_data():
     selected_item = tree.focus()
-
+    #check if not selected any data
     if not selected_item:
         messagebox.showerror("Error","Please select item")
         return
+    # get id of item who selected
     myid=tree.item(selected_item,'values')[0]
+    # get all data from entrys
     product_id=Myid_entre.get()
     product_name=Name_entre.get()
     product_prix=prix_entre.get()
     product_Qnt=Quantity_entre.get()
     product_Date_exep=Date_entre.get()
+    #handling error check if entrys empty
     if not (product_id or product_name or product_prix or product_Qnt or product_Date_exep):
-        messagebox.showerror("Error","Please fill in all fields.")
+        messagebox.showerror("Error","Please Entry Update Data.")
         return
-    for i in range(len(product_prix)):
-        if product_prix[0]=="0" or product_prix[i] not in ["0","1","2","3","4","5","6","7","8","9"]:
-            messagebox.showerror("Error","Enter Correct Prix")
-            return
-        #Quantity Should be numbers
-    for i in range(len(product_Qnt)):
-        if product_Qnt[0]=="0" or product_Qnt[i] not in ["0","1","2","3","4","5","6","7","8","9"]:
-            messagebox.showerror("Error","Enter Correct Prix")
-            return
-    #json file
+    #Prix should be numbers
+    Check_data(product_prix,"Prix")
+    #Quantity Should be numbers
+    Check_data(product_Qnt,"Quantity")
+    #json file read
     with open('products.json','r') as file:
         data=json.load(file)
     for item in data:
