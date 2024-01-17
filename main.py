@@ -134,15 +134,22 @@ def Update_data():
     messagebox.showinfo("Info",'Data has updated')
 #Fuction for delete data
 def Delete_data():
-    pass
-
-
-
-
-
-
-
-    
+    selected_item=tree.focus()
+    #Check if not selected any data
+    if not selected_item:
+        messagebox.showerror("Error","Please select item")
+        return
+    # get id of element who I want to delete it
+    myid=tree.item(selected_item,'values')[0]
+    with open('products.json','r') as file:
+        data=json.load(file)
+        for item in data:
+            if item["ID"]==myid:
+                data.remove(item)
+    with open('products.json','w') as file:
+        json.dump(data,file,indent=2)
+    add_to_treeview()
+    messagebox.showinfo("Delete","The product has been successfully deleted.")
 
 
 #Create Root (Window)
@@ -197,7 +204,7 @@ Sell = cs.CTkButton(root,corner_radius=15,border_width=2,bg_color="#393939",text
 Sell.place(x=20,y=400)
 #Delete Products
 Delete = cs.CTkButton(root,corner_radius=15,border_width=2,bg_color="#393939",text_color="white",cursor='hand2'
-                    ,font=My_Fonts["Second_Font"],hover_color="#FF2400",text="Delete Products",fg_color="#ED2939",width=245,height=40)
+                    ,font=My_Fonts["Second_Font"],hover_color="#FF2400",text="Delete Products",fg_color="#ED2939",width=245,height=40,command=Delete_data)
 Delete.place(x=20,y=460)
 #  i will create treeview
 style = ttk.Style(root)
