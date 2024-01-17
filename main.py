@@ -132,6 +132,9 @@ def Update_data():
     Quantity_entre.delete(0,tk.END)
     Date_entre.delete(0,tk.END)
     messagebox.showinfo("Info",'Data has updated')
+#Fuction for delete data
+def Delete_data():
+    pass
 
 
 
