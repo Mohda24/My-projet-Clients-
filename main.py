@@ -39,7 +39,7 @@ def add_json():
     product_name = Name_entre.get()
     product_prix = prix_entre.get()
     product_Qnt = Quantity_entre.get()
-    product_Date_exep = Date_entre.get()
+    product_Date_exep = datetime.datetime.now().strftime("%Y-%m-%d")
     #Check If Data not Empty
     if not (product_id and product_name and product_prix and product_Qnt and product_Date_exep):
         messagebox.showerror("Error","Please fill in all fields.")
@@ -56,6 +56,15 @@ def add_json():
     if product_id and not Check_data(product_id,"ID"):
         messagebox.showerror("Error","Please enter correct Id")
         return
+    #Check if id already exists
+    Myjson_file='products.json'
+    if os.path.exists(Myjson_file):
+        with open(Myjson_file,'r') as file:
+            data=json.load(file)
+            for item in data:
+                if product_id == item['ID']:
+                    messagebox.showerror("Error Id","Id already Exist")
+                    return
 
 
 
@@ -66,7 +75,7 @@ def add_json():
     Data_Entry = {
         'ID':product_id,
         'Name':product_name,
-        'Prix':product_prix,
+        'Prix':f"{product_prix} DH",
         'Quantity':product_Qnt,
         'Date Exep':product_Date_exep,
         'Total':f"{float(product_prix)*int(product_Qnt)} DH"
@@ -87,7 +96,6 @@ def add_json():
     Name_entre.delete(0,tk.END)
     prix_entre.delete(0,tk.END)
     Quantity_entre.delete(0,tk.END)
-    Date_entre.delete(0,tk.END)
     #add data to treeview
     add_to_treeview()
     #message box
@@ -120,7 +128,7 @@ def Update_data():
     product_name=Name_entre.get()
     product_prix=prix_entre.get()
     product_Qnt=Quantity_entre.get()
-    product_Date_exep=Date_entre.get()
+    product_Date_exep = datetime.datetime.now().strftime("%Y-%m-%d")
     #handling error check if entrys empty
     if not (product_id or product_name or product_prix or product_Qnt or product_Date_exep):
         messagebox.showerror("Error","Please Entry Update Data.")
@@ -167,7 +175,6 @@ def Update_data():
     Name_entre.delete(0,tk.END)
     prix_entre.delete(0,tk.END)
     Quantity_entre.delete(0,tk.END)
-    Date_entre.delete(0,tk.END)
     messagebox.showinfo("Info",'Data has updated')
 #Fuction for delete data
 def Delete_data():
@@ -210,24 +217,21 @@ Myid_entre = cs.CTkEntry(root,font=My_Fonts["Second_Font"],corner_radius=5,bg_co
 Myid_entre.place(x=120,y=20)
 #Name
 Name = cs.CTkLabel(root,text="Name :",font=My_Fonts["Primary_Font"],bg_color="#393939",text_color="white")
-Name.place(x=20,y=70)
+Name.place(x=20,y=80)
 Name_entre = cs.CTkEntry(root,font=My_Fonts["Second_Font"],bg_color="#393939")
-Name_entre.place(x=120,y=70)
+Name_entre.place(x=120,y=80)
 #Prix
 prix = cs.CTkLabel(root,text="Prix :",font=My_Fonts["Primary_Font"],bg_color="#393939",text_color="white")
-prix.place(x=20,y=120)
+prix.place(x=20,y=140)
 prix_entre = cs.CTkEntry(root,font=My_Fonts["Second_Font"],corner_radius=5,bg_color="#393939",border_width=1)
-prix_entre.place(x=120,y=120)
+prix_entre.place(x=120,y=140)
 #Quantity
 Quantity = cs.CTkLabel(root,text="Quantity :",font=My_Fonts["Primary_Font"],bg_color="#393939",text_color="white")
-Quantity.place(x=20,y=170)
+Quantity.place(x=20,y=200)
 Quantity_entre = cs.CTkEntry(root,font=My_Fonts["Second_Font"],corner_radius=5,bg_color="#393939",border_width=1)
-Quantity_entre.place(x=120,y=170)
+Quantity_entre.place(x=120,y=200)
 #DateExper
-Date = cs.CTkLabel(root,text="Date Exep :",font=My_Fonts["Primary_Font"],bg_color="#393939",text_color="white")
-Date.place(x=20,y=220)
-Date_entre = cs.CTkEntry(root,font=My_Fonts["Second_Font"],corner_radius=5,bg_color="#393939",border_width=1)
-Date_entre.place(x=120,y=220)
+
 #Add Button
 add = cs.CTkButton(root,corner_radius=15,border_width=2,bg_color="#393939",text_color="white",cursor='hand2'
                    ,font=My_Fonts["Second_Font"],hover_color="#3B7A57",text="Add Products",fg_color="#29AB87",width=245,height=40,command=add_json)
