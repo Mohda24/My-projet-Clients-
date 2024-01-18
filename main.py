@@ -4,15 +4,33 @@ from tkinter import ttk
 from tkinter import messagebox
 import json
 import os
+import re
+import datetime
 from tkinter.font import nametofont
 
 
 # Function For check for Data
-def Check_data(y,z):
-    for i in range(len(y)):
-        if y[0] == "0" or y[i] not in ["0","1","2","3","4","5","6","7","8","9"] :
-          messagebox.showerror("Error",f"Enter Correct {z}")
-          return
+def Check_data(data, data_type):
+    if data_type == "Prix":
+        # Check if Prix is int or float
+        if re.match(r'^[1-9]\d*(\.\d+)?$', data):
+            return True
+        else:
+            return False
+    elif data_type == "Quantity":
+        # Check if Quantity is int
+        if re.match(r'^[1-9]\d*$', data):
+            return True
+        else:
+            return False
+    elif data_type == "ID":
+        if re.match(r'^[1-9]\d*$', data):
+            return True
+        else:
+            return False
+    else:
+        return False
+
 
 # function to add data to json file
 def add_json():
@@ -26,10 +44,21 @@ def add_json():
     if not (product_id and product_name and product_prix and product_Qnt and product_Date_exep):
         messagebox.showerror("Error","Please fill in all fields.")
         return
-    #Prix Should be numbers
-    Check_data(product_prix,"Prix")
-    #Quantity Should be numbers
-    Check_data(product_Qnt,"Quantity")
+    #Prix Should be numbers (int or float)
+    if product_prix and not Check_data(product_prix,"Prix"):
+        messagebox.showerror("Error","Please enter correct Prix")
+        return
+    #Quantity Should be numbers (only int)
+    if product_Qnt and not Check_data(product_Qnt,"Quantity"):
+        messagebox.showerror("Error","Please enter correct Quantity")
+        return
+    # id should be int
+    if product_id and not Check_data(product_id,"ID"):
+        messagebox.showerror("Error","Please enter correct Id")
+        return
+
+
+
 
 
 
@@ -97,30 +126,38 @@ def Update_data():
         messagebox.showerror("Error","Please Entry Update Data.")
         return
     #Prix should be numbers
-    Check_data(product_prix,"Prix")
-    #Quantity Should be numbers
-    Check_data(product_Qnt,"Quantity")
+    if product_prix and not Check_data(product_prix,"Prix"):
+        messagebox.showerror("Error","Please enter correct Prix")
+        return
+
+        # Quantity should be numbers
+    if product_Qnt and not Check_data(product_Qnt,"Quantity"):
+        messagebox.showerror("Error","Please enter correct Quantity")
+        return
+        #id should be number
+    if product_id and not Check_data(product_id,"ID"):
+        messagebox.showerror("Error","Please enter correct ID")
+        return
     #json file read
     with open('products.json','r') as file:
         data=json.load(file)
+    # I want to check if data from entrys not empty
     for item in data:
         if item['ID']==myid:
-            if not product_name:
-                pass
-            else:
-                item['Name']=product_name
-            if not product_prix:
-                pass
-            else:
+            #I want to check if id not exists
+            if product_id and product_id != myid:
+                if any(i['ID']==product_id for i in data):
+                    messagebox.showerror("ID Error","Product ID already exists.")
+                    return
+                item['ID']=product_id
+            if product_name:
+               item['Name']=product_name
+            if product_prix:
                item['Prix']=product_prix
-            if not product_Qnt:
-                pass
-            else:
-                item['Quantity']=product_Qnt
-            if not product_Date_exep:
-                pass
-            else:
-                item['Date Exep']=product_Date_exep
+            if product_Qnt:
+               item['Quantity']=product_Qnt
+            if product_Date_exep:
+               item['Date Exep']=product_Date_exep
             item['Total']=f"{float(item['Prix'])*int(item['Quantity'])} DH"
             break
     with open('products.json','w') as file:
@@ -157,6 +194,7 @@ root = cs.CTk()
 root.title("MyProgram")
 root.config(background="#393939")
 root.geometry("1000x550")
+
 
 
 #Fonts
