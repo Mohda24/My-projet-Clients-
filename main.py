@@ -9,6 +9,7 @@ import datetime
 from tkinter.font import nametofont
 import csv
 from tkinter import filedialog
+#tahiya
 
 # Function For check for Data
 def Check_data(data, data_type):
@@ -50,7 +51,7 @@ def add_json():
     product_Qnt = Quantity_entre.get()
     product_Date_exep = datetime.datetime.now().strftime("%Y-%m-%d")
     #Check If Data not Empty
-    if not (product_id and product_name and product_prix and product_Qnt and product_Date_exep):
+    if not (product_id and product_name and product_prix and product_Qnt ):
         messagebox.showerror("Error","Please fill in all fields.")
         return
     #Prix Should be numbers (int or float)
@@ -82,7 +83,7 @@ def add_json():
     Data_Entry = {
         'ID':product_id,
         'Name':product_name,
-        'Prix':f"{product_prix} DH",
+        'Prix':product_prix,
         'Quantity':product_Qnt,
         'Date':product_Date_exep,
         'Total':f"{float(product_prix)*int(product_Qnt)} DH"
@@ -217,8 +218,7 @@ def export_to_csv():
         # check if data not empty
         if data:
             # Ask the user to choose the file location
-            csv_file_path = filedialog.asksaveasfilename(defaultextension=".csv",
-                                                           filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
+            csv_file_path = filedialog.asksaveasfilename(defaultextension=".csv",filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
 
             if csv_file_path:
                 with open(csv_file_path, 'w', newline='') as csvfile:
